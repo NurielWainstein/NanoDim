@@ -1,5 +1,3 @@
-from PyQt6.QtWidgets import QFileDialog
-
 from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QStackedWidget
 from widgets.file_list_widget import FileListWidget
 from widgets.drag_drop_widget import DragDropWidget

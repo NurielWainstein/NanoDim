@@ -43,3 +43,5 @@ class DragDropWidget(QLabel):
         if file_paths:
             for file_path in file_paths:
                 self.handle_dropped_file(file_path)
+                self.parent_window.file_list_panel.update_items()
+
