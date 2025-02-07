@@ -4,6 +4,9 @@ import numpy as np
 from stl import mesh
 from pathlib import Path
 
+from views.stl_file_manager import FileManagerWindow
+from widgets.navigation_button import NavigationButton
+
 
 class EditSTLWindow(QMainWindow):
     def __init__(self, file_path, parent=None):
@@ -48,9 +51,8 @@ class EditSTLWindow(QMainWindow):
         zoomInButton.clicked.connect(self.zoomIn)
         bottomLayout.addWidget(zoomInButton)
 
-        # Button 2: "Go to File Manager"
-        fileManagerButton = QPushButton("Go to File Manager")
-        fileManagerButton.clicked.connect(self.switchToFileManager)
+        # Button 2: "Go to File Manager" - Using NavigationButton
+        fileManagerButton = NavigationButton(self, FileManagerWindow, "Go to File Manager")
         bottomLayout.addWidget(fileManagerButton)
 
     def showSTL(self, filename):
@@ -105,11 +107,3 @@ class EditSTLWindow(QMainWindow):
         """Zoom in when button is clicked"""
         self.zoom_factor += 5
         self.viewer.setCameraPosition(distance=self.zoom_factor)
-
-    def switchToFileManager(self):
-        """Switch to the FileManagerWindow"""
-        from views.stl_file_manager import FileManagerWindow
-
-        self.file_manager_window = FileManagerWindow()  # Create instance of FileManagerWindow
-        self.file_manager_window.show()  # Show the window
-        self.close()  # Close the current EditSTLWindow
