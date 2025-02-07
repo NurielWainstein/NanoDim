@@ -36,6 +36,7 @@ class DragDropWidget(QLabel):
         """Handle the dropped file."""
         file_controller = self.parent_window.file_controller
         file_controller.save_and_add_file(file_path)
+        self.parent_window.file_list_panel.update_items()
 
     def select_files(self):
         """Open a file dialog to select STL files."""
