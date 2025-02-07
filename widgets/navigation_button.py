@@ -13,5 +13,8 @@ class NavigationButton(QPushButton):
         self.clicked.connect(self.navigate_to_screen)
 
     def navigate_to_screen(self):
-        """Handle the navigation to the target screen."""
+        """Ensure the OpenGL context is cleaned before navigating."""
+        if hasattr(self.parent_window, "viewer") and self.parent_window.viewer is not None:
+            self.parent_window.close()  # Close the window (triggers cleanup)
+
         NavigationUtils.open_screen(self.parent_window, self.target_screen)
