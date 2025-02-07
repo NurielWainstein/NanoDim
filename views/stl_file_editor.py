@@ -1,9 +1,11 @@
-from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton
+from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
 import vtk
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
-from pathlib import Path
 from views.stl_file_manager import FileManagerWindow
 from widgets.navigation_button import NavigationButton
+import os
+import time
 
 
 class EditSTLWindow(QMainWindow):
@@ -42,14 +44,18 @@ class EditSTLWindow(QMainWindow):
         bottomLayout = QHBoxLayout()
         layout.addLayout(bottomLayout)
 
-        # Button 1: Zoom In
-        zoomInButton = QPushButton("Zoom In")
-        zoomInButton.clicked.connect(self.zoomIn)
-        bottomLayout.addWidget(zoomInButton)
+        # Button: Screenshot
+        screenshotButton = QPushButton("Take Screenshot")
+        screenshotButton.clicked.connect(self.takeScreenshot)
+        bottomLayout.addWidget(screenshotButton)
 
-        # Button 2: Go to File Manager
+        # Button: Go to File Manager
         fileManagerButton = NavigationButton(self, FileManagerWindow, "Go to File Manager")
         bottomLayout.addWidget(fileManagerButton)
+
+        # Temporary message label
+        self.messageLabel = QLabel("")
+        layout.addWidget(self.messageLabel)
 
     def showSTL(self, filename):
         # Clear previous STL file if any
@@ -72,8 +78,28 @@ class EditSTLWindow(QMainWindow):
         self.renderer.ResetCamera()
         self.vtk_widget.GetRenderWindow().Render()
 
-    def zoomIn(self):
-        """Zoom in the camera"""
-        camera = self.renderer.GetActiveCamera()
-        camera.Zoom(1.2)
-        self.vtk_widget.GetRenderWindow().Render()
+    def takeScreenshot(self):
+        """Capture and save a screenshot of the VTK render window with a unique filename"""
+        screenshot_dir = "local_files/screenshots"
+        os.makedirs(screenshot_dir, exist_ok=True)
+
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        filename = os.path.join(screenshot_dir, f"screenshot_{timestamp}.png")
+
+        # Get the render window as an image
+        window_to_image_filter = vtk.vtkWindowToImageFilter()
+        window_to_image_filter.SetInput(self.vtk_widget.GetRenderWindow())
+        window_to_image_filter.Update()
+
+        writer = vtk.vtkPNGWriter()
+        writer.SetFileName(filename)
+        writer.SetInputConnection(window_to_image_filter.GetOutputPort())
+        writer.Write()
+
+        self.messageLabel.setText(f"Screenshot saved: {filename}")
+        self.messageLabel.repaint()
+
+        # Hide the message after a short delay
+        QTimer.singleShot(2000, lambda: self.messageLabel.setText(""))
+
+        print(f"Screenshot saved to {filename}")
