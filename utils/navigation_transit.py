@@ -9,7 +9,7 @@ class NavigationUtils:
 
         # Ensure the current window is a QMainWindow
         if isinstance(current_window, QMainWindow):
-            current_window.setCentralWidget(new_widget.centralWidget())  # Replace only the content
+            current_window.setCentralWidget(new_widget)
 
     @staticmethod
     def open_stl_editor(item, file_controller, stacked_widget, parent):
