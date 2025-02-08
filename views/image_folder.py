@@ -1,58 +1,18 @@
-import sys
 import os
-import subprocess
-import inspect  # To get functions dynamically
+import inspect
 import json
-from PyQt6.QtGui import QFileSystemModel
 from PyQt6.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QPushButton, QTreeView, QHBoxLayout, QComboBox, QTextEdit, QDialog, QMainWindow
+    QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QMainWindow
 )
-from PyQt6.QtCore import QDir
 
 from utils import custom_functions
 from utils.custom_functions import _process_files_in_directory
 from widgets.navigation_button import NavigationButton
+from widgets.dropdown_widget import DropdownWidget
+from widgets.file_tree_widget import FileTreeWidget
+from widgets.config_editor_widget import JsonEditorDialog
 
 CONFIG_FILE = "config.json"
-
-
-class JsonEditorDialog(QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Edit Function Arguments")
-        self.setGeometry(200, 200, 400, 300)
-
-        self.layout = QVBoxLayout()
-
-        self.text_edit = QTextEdit()
-        self.text_edit.setText(self.loadJsonConfig())  # Load saved JSON
-        self.layout.addWidget(self.text_edit)
-
-        self.save_button = QPushButton("Save")
-        self.save_button.clicked.connect(self.saveJsonConfig)
-        self.layout.addWidget(self.save_button)
-
-        self.setLayout(self.layout)
-
-    def loadJsonConfig(self):
-        """Loads JSON data from file."""
-        if os.path.exists(CONFIG_FILE):
-            with open(CONFIG_FILE, "r") as f:
-                return f.read()
-        return "{}"  # Default empty JSON object
-
-    def saveJsonConfig(self):
-        """Saves JSON data to file and closes the dialog."""
-        with open(CONFIG_FILE, "w") as f:
-            f.write(self.text_edit.toPlainText())
-        self.accept()
-
-    def getJsonData(self):
-        """Returns the JSON data from the editor."""
-        try:
-            return json.loads(self.text_edit.toPlainText())
-        except json.JSONDecodeError:
-            return {}  # Return empty dict if invalid JSON
 
 
 class FileViewerWindow(QMainWindow):
@@ -78,34 +38,23 @@ class FileViewerWindow(QMainWindow):
         top_bar_layout.addStretch()  # Push button to the right
         top_bar_layout.addWidget(self.nav_button)
 
-        # Dropdown for functions
-        self.function_dropdown = QComboBox()
-        self.function_dropdown.addItem("Select Function")
-        self.function_dropdown.addItems(self.getCustomFunctions())  # Populate functions
+        # Dropdown for functions using the new DropdownWidget
+        self.function_dropdown = DropdownWidget(self)
+        self.function_dropdown.update_items(self.getCustomFunctions())  # Populate functions
         self.function_dropdown.currentIndexChanged.connect(self.runSelectedFunction)
 
-        # Button to open JSON editor
+        # Button to open Config Editor
         self.config_button = QPushButton("Edit Config")
-        self.config_button.clicked.connect(self.openJsonEditor)
+        self.config_button.clicked.connect(self.openConfigEditor)
 
         top_bar_layout.addWidget(self.function_dropdown)
         top_bar_layout.addWidget(self.config_button)
 
         main_layout.addLayout(top_bar_layout)
 
-        # File system model
-        self.model = QFileSystemModel()
-        self.model.setRootPath(self.folder_path)
-        self.model.setFilter(QDir.Filter.Files | QDir.Filter.NoDotAndDotDot)
-
-        # Tree View
-        self.treeView = QTreeView()
-        self.treeView.setModel(self.model)
-        self.treeView.setRootIndex(self.model.index(self.folder_path))
-        self.treeView.setSelectionMode(QTreeView.SelectionMode.MultiSelection)
-        self.treeView.doubleClicked.connect(self.openFiles)  # Open all selected files on double-click
-
-        main_layout.addWidget(self.treeView)
+        # Use FileTreeWidget to show files
+        self.file_tree_widget = FileTreeWidget(self.folder_path)
+        main_layout.addWidget(self.file_tree_widget)
 
         # Set central widget for QMainWindow
         self.setCentralWidget(central_widget)
@@ -115,12 +64,11 @@ class FileViewerWindow(QMainWindow):
         return [name for name, obj in inspect.getmembers(custom_functions, inspect.isfunction) if
                 not name.startswith('_')]
 
-    def openJsonEditor(self):
-        """Opens a dialog to edit function arguments as JSON."""
-        dialog = JsonEditorDialog(self)
-        if dialog.exec():  # If the user clicks Save
-            self.function_args = dialog.getJsonData()
-            self.saveJsonConfig()
+    def openConfigEditor(self):
+        """Opens the ConfigEditorWidget to edit function arguments."""
+        editor_widget = JsonEditorDialog(config_file=CONFIG_FILE, parent=self)
+        editor_widget.show()
+        editor_widget.loadJsonConfig()
 
     def runSelectedFunction(self):
         """Executes the selected function from custom_functions.py with arguments, using multithreading."""
@@ -140,33 +88,3 @@ class FileViewerWindow(QMainWindow):
                 except json.JSONDecodeError:
                     return {}
         return {}
-
-    def saveJsonConfig(self):
-        """Saves the current JSON configuration to a file."""
-        with open(CONFIG_FILE, "w") as f:
-            json.dump(self.function_args, f, indent=4)
-
-    def openFiles(self):
-        """Opens all selected files when a file is double-clicked."""
-        selected_indexes = self.treeView.selectionModel().selectedIndexes()
-        selected_files = [
-            self.model.filePath(index) for index in selected_indexes if self.model.isDir(index) is False
-        ]
-        self.openSelectedFiles(selected_files)
-
-    def openSelectedFiles(self, files):
-        """Opens the given list of files based on OS."""
-        for file_path in files:
-            if sys.platform == "darwin":  # macOS
-                subprocess.run(["open", file_path])
-            elif sys.platform == "win32":  # Windows
-                os.startfile(file_path)
-            elif sys.platform == "linux":  # Linux
-                subprocess.run(["xdg-open", file_path])
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = FileViewerWindow()
-    window.show()
-    sys.exit(app.exec())
