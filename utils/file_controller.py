@@ -1,9 +1,11 @@
 import os
 from shutil import copy2
 
+from config.config import STL_FILES_DIR
+
 class FileController:
     def __init__(self):
-        self.save_path = "./local_files/stl_files"
+        self.save_path = STL_FILES_DIR
         os.makedirs(self.save_path, exist_ok=True)
         self.stl_files = self.load_existing_files()
 

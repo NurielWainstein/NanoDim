@@ -1,12 +1,15 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QFileDialog, QPushButton
 
+from config.config import DEFAULT_DRAG_DROP_DESIGN
+
+
 class DragDropWidget(QLabel):
     def __init__(self, parent=None):
         super().__init__("Drag and drop STL files here", parent)
         self.parent_window = parent
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.setStyleSheet("background-color: lightgray; height: 150px; border: 2px dashed black;")
+        self.setStyleSheet(DEFAULT_DRAG_DROP_DESIGN)
         self.setAcceptDrops(True)
 
         # Add a "Select STL Files" button

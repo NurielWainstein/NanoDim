@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QMainWindow
 )
 
+from config.config import FILE_MANAGER_WINDOW, SCREENSHOTS_DIR, BATCH_FUNCTIONS_CONFIG_FILE, DEFAULT_BUTTON_DESIGN
 from utils import custom_functions
 from utils.custom_functions import _process_files_in_directory
 from widgets.navigation_button import NavigationButton
@@ -12,17 +13,14 @@ from widgets.dropdown_widget import DropdownWidget
 from widgets.file_tree_widget import FileTreeWidget
 from widgets.config_editor_widget import JsonEditorDialog
 
-CONFIG_FILE = "local_files/configurations/config.json"
-
-
 class FileViewerWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("File Viewer")
         self.setGeometry(100, 100, 600, 400)
 
-        self.folder_path = os.path.abspath("local_files/screenshots")
-        self.config_editor_widget = JsonEditorDialog(CONFIG_FILE)
+        self.folder_path = os.path.abspath(SCREENSHOTS_DIR)
+        self.config_editor_widget = JsonEditorDialog(BATCH_FUNCTIONS_CONFIG_FILE)
         self.function_args = self.config_editor_widget.getJsonData()  # Load saved config
 
         self.initUI()
@@ -35,21 +33,21 @@ class FileViewerWindow(QMainWindow):
         top_bar_layout = QHBoxLayout()
 
         # Navigation Button (top right)
-        self.nav_button = NavigationButton(self, "FileManagerWindow", "Go to Main App")
-        top_bar_layout.addStretch()  # Push button to the right
-        top_bar_layout.addWidget(self.nav_button)
+        self.nav_button = NavigationButton(self, FILE_MANAGER_WINDOW, "Go to Main App")
+
+        # Button to open Config Editor
+        self.config_button = QPushButton("Edit Config")
+        self.config_button.setStyleSheet(DEFAULT_BUTTON_DESIGN)
+        self.config_button.clicked.connect(self.config_editor_widget.openConfigEditor)
 
         # Dropdown for functions using the new DropdownWidget
         self.function_dropdown = DropdownWidget(self)
         self.function_dropdown.update_items(self.getCustomFunctions())  # Populate functions
         self.function_dropdown.currentIndexChanged.connect(self.runSelectedFunction)
 
-        # Button to open Config Editor
-        self.config_button = QPushButton("Edit Config")
-        self.config_button.clicked.connect(self.config_editor_widget.openConfigEditor)
-
         top_bar_layout.addWidget(self.function_dropdown)
         top_bar_layout.addWidget(self.config_button)
+        top_bar_layout.addWidget(self.nav_button)
 
         main_layout.addLayout(top_bar_layout)
 
@@ -74,5 +72,5 @@ class FileViewerWindow(QMainWindow):
         if selected_function != "Select Function":
             func = getattr(custom_functions, selected_function, None)
             if callable(func):
-                directory = "local_files/screenshots"  # Adjust as necessary
+                directory = SCREENSHOTS_DIR  # Adjust as necessary
                 _process_files_in_directory(directory, func, **self.function_args)

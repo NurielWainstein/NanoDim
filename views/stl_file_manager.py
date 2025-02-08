@@ -1,6 +1,8 @@
 from PyQt6.QtWidgets import (
     QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QStackedWidget
 )
+
+from config.config import FILE_VIEWER_WINDOW
 from widgets.file_list_widget import FileListWidget
 from widgets.drag_drop_widget import DragDropWidget
 from utils.file_controller import FileController
@@ -29,7 +31,7 @@ class FileManagerWindow(QMainWindow):
         self.top_bar_layout = QHBoxLayout()
 
         # Navigation button (top right)
-        self.nav_button = NavigationButton(self, "FileViewerWindow", "Screenshots Manager")
+        self.nav_button = NavigationButton(self, FILE_VIEWER_WINDOW, "Screenshots Manager")
         self.top_bar_layout.addStretch()  # Push button to the right
         self.top_bar_layout.addWidget(self.nav_button)
 

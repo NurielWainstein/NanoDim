@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
 
+from config.config import FILE_MANAGER_WINDOW, SCREENSHOTS_DIR, DEFAULT_BUTTON_DESIGN
 from widgets.stl_viewer_widget import VTKViewerWidget
 
 from widgets.navigation_button import NavigationButton
@@ -42,10 +43,11 @@ class EditSTLWindow(QMainWindow):
         layout.addLayout(bottomLayout)
 
         screenshotButton = QPushButton("Take Screenshot")
+        screenshotButton.setStyleSheet(DEFAULT_BUTTON_DESIGN)
         screenshotButton.clicked.connect(self._take_screenshot)
         bottomLayout.addWidget(screenshotButton)
 
-        fileManagerButton = NavigationButton(self, "FileManagerWindow", "Go to File Manager")
+        fileManagerButton = NavigationButton(self, FILE_MANAGER_WINDOW, "Go to File Manager")
         bottomLayout.addWidget(fileManagerButton)
 
     def _setup_message_label(self, layout):
@@ -74,7 +76,7 @@ class EditSTLWindow(QMainWindow):
 
     def _get_screenshot_directory(self):
         """Return the directory to save screenshots"""
-        return "local_files/screenshots"
+        return SCREENSHOTS_DIR
 
     def _save_screenshot(self, filename):
         """Save the screenshot using VTK"""

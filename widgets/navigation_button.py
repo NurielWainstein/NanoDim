@@ -1,11 +1,7 @@
 from PyQt6.QtWidgets import QPushButton
-from utils.navigation_transit import NavigationUtils
 
-# Dictionary mapping class names to their corresponding methods
-class_to_function = {
-    "FileManagerWindow": "navigate_to_file_manager_window",
-    "FileViewerWindow": "navigate_to_file_viewer_window",
-}
+from config.config import CLASS_NAVIGATION_MAP, DEFAULT_BUTTON_DESIGN
+from utils.navigation_transit import NavigationUtils
 
 class NavigationButton(QPushButton):
     def __init__(self, parent, target_screen_name: str, label=""):
@@ -13,15 +9,15 @@ class NavigationButton(QPushButton):
 
         self.parent_window = parent
         self.target_screen_name = target_screen_name
-        self.setStyleSheet("font-size: 14px; padding: 10px;")
+        self.setStyleSheet(DEFAULT_BUTTON_DESIGN)
 
         # Connect the button's click event to the navigation action
         self.clicked.connect(self.navigate_to_screen)
 
     def navigate_to_screen(self):
         # Check if the target screen name exists in the mapping
-        if self.target_screen_name in class_to_function:
-            method_name = class_to_function[self.target_screen_name]
+        if self.target_screen_name in CLASS_NAVIGATION_MAP:
+            method_name = CLASS_NAVIGATION_MAP[self.target_screen_name]
             if hasattr(self, method_name):
                 target_class = getattr(self, method_name)()  # Call the method to get the class
                 if target_class:
