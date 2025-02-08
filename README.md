@@ -1,6 +1,7 @@
 Python-based application for managing STL files. It allows users to upload, and view 3D models, with features such as scaling, rotating, and projecting 3D models to 2D. Built using PyQt6 for the GUI and various Python libraries for 3D and image processing.
 
 Features
+
 STL File Management: Upload, view, and organize STL files.
 3D Model Viewer: Rotate and zoom in and out of the model.
 3D to 2D Projection: Convert 3D models into 2D images for analysis and further processing.
@@ -10,6 +11,7 @@ Modular Architecture: The application is designed with modular components to sep
 
 
 Installation
+
 Clone the repository:
 
 git clone https://github.com/yourusername/nanodim.git
@@ -20,9 +22,11 @@ python -m venv venv
 source venv/bin/activate   # On Windows: venv\Scripts\activate
 
 Install dependencies:
+
 pip install -r requirements.txt
 
 Usage
+
 Run the application:
 python init_app.py
 
