@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
 )
 from widgets.file_list_widget import FileListWidget
 from widgets.drag_drop_widget import DragDropWidget
-from controllers.file_controller import FileController
+from utils.file_controller import FileController
 from widgets.navigation_button import NavigationButton
 
 class FileManagerWindow(QMainWindow):
