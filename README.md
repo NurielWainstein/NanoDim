@@ -4,7 +4,7 @@ Features
 STL File Management: Upload, view, and organize STL files.
 3D Model Viewer: Rotate and zoom in and out of the model.
 3D to 2D Projection: Convert 3D models into 2D images for analysis and further processing.
-Image Processing: Use OpenCV for filters and processing on the 2D projections.
+Image Processing: Use OpenCV for filters and processing on the 2D projections. -> Batch opperations over all the files with multirheading
 
 Modular Architecture: The application is designed with modular components to separate views, models, and controllers.
 
@@ -35,6 +35,7 @@ The Image Folder can be used to view 2D projections and apply OpenCV filters.
 Project Structure
 NanoDim/
 ├── config.json           # Configuration settings
+├── generate_exe.py       # start of a windows installer generator(still not fully working)
 ├── init_app.py           # Entry point for the application
 ├── local_files/
 │   ├── screenshots      # Directory for saving image outputs
