@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import QDir
 
 from utils import custom_functions
+from utils.custom_functions import _process_files_in_directory
 from widgets.navigation_button import NavigationButton
 
 CONFIG_FILE = "config.json"
@@ -110,8 +111,9 @@ class FileViewerWindow(QMainWindow):
         self.setCentralWidget(central_widget)
 
     def getCustomFunctions(self):
-        """Gets all functions from the custom_functions module."""
-        return [name for name, obj in inspect.getmembers(custom_functions, inspect.isfunction)]
+        """Gets all functions from the custom_functions module, excluding those that start with an underscore."""
+        return [name for name, obj in inspect.getmembers(custom_functions, inspect.isfunction) if
+                not name.startswith('_')]
 
     def openJsonEditor(self):
         """Opens a dialog to edit function arguments as JSON."""
@@ -121,12 +123,13 @@ class FileViewerWindow(QMainWindow):
             self.saveJsonConfig()
 
     def runSelectedFunction(self):
-        """Executes the selected function from custom_functions.py with arguments."""
+        """Executes the selected function from custom_functions.py with arguments, using multithreading."""
         selected_function = self.function_dropdown.currentText()
         if selected_function != "Select Function":
             func = getattr(custom_functions, selected_function, None)
             if callable(func):
-                func(**self.function_args)  # Pass kwargs
+                directory = "local_files/screenshots"  # Adjust as necessary
+                _process_files_in_directory(directory, func, **self.function_args)
 
     def loadJsonConfig(self):
         """Loads JSON configuration from a file."""
