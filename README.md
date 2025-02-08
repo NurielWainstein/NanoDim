@@ -5,7 +5,7 @@ Features
 STL File Management: Upload, view, and organize STL files.
 3D Model Viewer: Rotate and zoom in and out of the model.
 3D to 2D Projection: Convert 3D models into 2D images for analysis and further processing.
-# Note that the when selecting a function from the drop down list in file manager, it will apply a Batch opperation over all the files with multirheading
+- Note that the when selecting a function from the drop down list in file manager, it will apply a Batch opperation over all the files with multirheading
 Image Processing: Use OpenCV for filters and processing on the 2D projections.
 
 Modular Architecture: The application is designed with modular components to separate views, models, and controllers.
