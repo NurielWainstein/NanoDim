@@ -12,7 +12,7 @@ from widgets.dropdown_widget import DropdownWidget
 from widgets.file_tree_widget import FileTreeWidget
 from widgets.config_editor_widget import JsonEditorDialog
 
-CONFIG_FILE = "config.json"
+CONFIG_FILE = "local_files/configurations/config.json"
 
 
 class FileViewerWindow(QMainWindow):
@@ -22,7 +22,8 @@ class FileViewerWindow(QMainWindow):
         self.setGeometry(100, 100, 600, 400)
 
         self.folder_path = os.path.abspath("local_files/screenshots")
-        self.function_args = self.loadJsonConfig()  # Load saved config
+        self.config_editor_widget = JsonEditorDialog(CONFIG_FILE)
+        self.function_args = self.config_editor_widget.getJsonData()  # Load saved config
 
         self.initUI()
 
@@ -45,7 +46,7 @@ class FileViewerWindow(QMainWindow):
 
         # Button to open Config Editor
         self.config_button = QPushButton("Edit Config")
-        self.config_button.clicked.connect(self.openConfigEditor)
+        self.config_button.clicked.connect(self.config_editor_widget.openConfigEditor)
 
         top_bar_layout.addWidget(self.function_dropdown)
         top_bar_layout.addWidget(self.config_button)
@@ -64,27 +65,14 @@ class FileViewerWindow(QMainWindow):
         return [name for name, obj in inspect.getmembers(custom_functions, inspect.isfunction) if
                 not name.startswith('_')]
 
-    def openConfigEditor(self):
-        """Opens the ConfigEditorWidget to edit function arguments."""
-        editor_widget = JsonEditorDialog(config_file=CONFIG_FILE, parent=self)
-        editor_widget.show()
-        editor_widget.loadJsonConfig()
-
     def runSelectedFunction(self):
         """Executes the selected function from custom_functions.py with arguments, using multithreading."""
+        # update the function args
+        self.function_args = self.config_editor_widget.getJsonData()
+
         selected_function = self.function_dropdown.currentText()
         if selected_function != "Select Function":
             func = getattr(custom_functions, selected_function, None)
             if callable(func):
                 directory = "local_files/screenshots"  # Adjust as necessary
                 _process_files_in_directory(directory, func, **self.function_args)
-
-    def loadJsonConfig(self):
-        """Loads JSON configuration from a file."""
-        if os.path.exists(CONFIG_FILE):
-            with open(CONFIG_FILE, "r") as f:
-                try:
-                    return json.load(f)
-                except json.JSONDecodeError:
-                    return {}
-        return {}

@@ -11,7 +11,7 @@ class JsonEditorDialog(QDialog):
         self.config_file = config_file
         self.layout = QVBoxLayout()
         self.text_edit = QTextEdit()
-        self.text_edit.setText(self.loadJsonConfig())  # Load saved JSON
+        self.text_edit.setText(self.loadJsonConfig())
         self.layout.addWidget(self.text_edit)
 
         self.save_button = QPushButton("Save")
@@ -39,3 +39,8 @@ class JsonEditorDialog(QDialog):
             return json.loads(self.text_edit.toPlainText())
         except json.JSONDecodeError:
             return {}  # Return empty dict if invalid JSON
+
+    def openConfigEditor(self):
+        """Opens the ConfigEditorWidget to edit function arguments."""
+        self.show()
+        self.loadJsonConfig()
