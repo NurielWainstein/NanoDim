@@ -1,4 +1,3 @@
-from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
 import vtk
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
@@ -6,6 +5,9 @@ from widgets.navigation_button import NavigationButton
 import os
 import time
 
+
+import weakref
+from PyQt6.QtCore import QTimer
 
 class EditSTLWindow(QMainWindow):
     def __init__(self, file_path, parent=None):
@@ -98,7 +100,12 @@ class EditSTLWindow(QMainWindow):
         self.messageLabel.setText(f"Screenshot saved: {filename}")
         self.messageLabel.repaint()
 
-        # Hide the message after a short delay
-        QTimer.singleShot(2000, lambda: self.messageLabel.setText(""))
+        # Hide the message after a short delay using weakref to ensure QLabel is still valid
+        QTimer.singleShot(2000, weakref.ref(self.messageLabel, self.hideMessage))
 
         print(f"Screenshot saved to {filename}")
+
+    def hideMessage(self, ref):
+        label = ref()
+        if label:
+            label.setText("")

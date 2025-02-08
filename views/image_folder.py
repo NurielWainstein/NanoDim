@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import QDir
 
 from utils import custom_functions
+from widgets.navigation_button import NavigationButton
 
 CONFIG_FILE = "config.json"
 
@@ -68,8 +69,13 @@ class FileViewerWindow(QMainWindow):
         central_widget = QWidget()  # Create a central widget for QMainWindow
         main_layout = QVBoxLayout(central_widget)  # Apply layout to central widget
 
-        # Top Bar Layout (Function Dropdown + Config Button)
+        # Top Bar Layout (Function Dropdown + Config Button + Navigation Button)
         top_bar_layout = QHBoxLayout()
+
+        # Navigation Button (top right)
+        self.nav_button = NavigationButton(self, "FileManagerWindow", "Go to Main App")
+        top_bar_layout.addStretch()  # Push button to the right
+        top_bar_layout.addWidget(self.nav_button)
 
         # Dropdown for functions
         self.function_dropdown = QComboBox()
