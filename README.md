@@ -1,5 +1,7 @@
 Python-based application for managing STL files. It allows users to upload, and view 3D models, with features such as scaling, rotating, and projecting 3D models to 2D. Built using PyQt6 for the GUI and various Python libraries for 3D and image processing.
 
+https://github.com/user-attachments/assets/ae1ced27-9b66-4545-a495-9392c571aad2
+
 # Features
 
 STL File Management: Upload, view, and organize STL files.
