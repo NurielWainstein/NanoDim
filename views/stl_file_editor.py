@@ -2,7 +2,6 @@ from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
 import vtk
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
-from views.stl_file_manager import FileManagerWindow
 from widgets.navigation_button import NavigationButton
 import os
 import time
@@ -50,7 +49,7 @@ class EditSTLWindow(QMainWindow):
         bottomLayout.addWidget(screenshotButton)
 
         # Button: Go to File Manager
-        fileManagerButton = NavigationButton(self, FileManagerWindow, "Go to File Manager")
+        fileManagerButton = NavigationButton(self, "FileManagerWindow", "Go to File Manager")
         bottomLayout.addWidget(fileManagerButton)
 
         # Temporary message label
