@@ -3,8 +3,8 @@ from utils.navigation_transit import NavigationUtils
 
 # Dictionary mapping class names to their corresponding methods
 class_to_function = {
-    "EditSTLWindow": "navigate_to_edit_stl_window",
     "FileManagerWindow": "navigate_to_file_manager_window",
+    "FileViewerWindow": "navigate_to_file_viewer_window",
 }
 
 class NavigationButton(QPushButton):
@@ -36,3 +36,8 @@ class NavigationButton(QPushButton):
     def navigate_to_file_manager_window(self):
         from views.stl_file_manager import FileManagerWindow
         return FileManagerWindow
+
+    def navigate_to_file_viewer_window(self):
+        from views.image_folder import FileViewerWindow
+        return FileViewerWindow
+

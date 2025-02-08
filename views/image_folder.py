@@ -5,7 +5,7 @@ import inspect  # To get functions dynamically
 import json
 from PyQt6.QtGui import QFileSystemModel
 from PyQt6.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QPushButton, QTreeView, QHBoxLayout, QComboBox, QTextEdit, QDialog
+    QApplication, QWidget, QVBoxLayout, QPushButton, QTreeView, QHBoxLayout, QComboBox, QTextEdit, QDialog, QMainWindow
 )
 from PyQt6.QtCore import QDir
 
@@ -53,18 +53,20 @@ class JsonEditorDialog(QDialog):
             return {}  # Return empty dict if invalid JSON
 
 
-class FileViewerApp(QWidget):
+class FileViewerWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("File Viewer")
         self.setGeometry(100, 100, 600, 400)
 
-        self.folder_path = os.path.abspath("../local_files/screenshots")
+        self.folder_path = os.path.abspath("local_files/screenshots")
         self.function_args = self.loadJsonConfig()  # Load saved config
+
         self.initUI()
 
     def initUI(self):
-        main_layout = QVBoxLayout()
+        central_widget = QWidget()  # Create a central widget for QMainWindow
+        main_layout = QVBoxLayout(central_widget)  # Apply layout to central widget
 
         # Top Bar Layout (Function Dropdown + Config Button)
         top_bar_layout = QHBoxLayout()
@@ -98,7 +100,8 @@ class FileViewerApp(QWidget):
 
         main_layout.addWidget(self.treeView)
 
-        self.setLayout(main_layout)
+        # Set central widget for QMainWindow
+        self.setCentralWidget(central_widget)
 
     def getCustomFunctions(self):
         """Gets all functions from the custom_functions module."""
@@ -155,6 +158,6 @@ class FileViewerApp(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = FileViewerApp()
+    window = FileViewerWindow()
     window.show()
     sys.exit(app.exec())

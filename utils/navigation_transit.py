@@ -4,10 +4,12 @@ from PyQt6.QtWidgets import QMainWindow
 class NavigationUtils:
     @staticmethod
     def open_screen(current_window: QMainWindow, target_window):
-        """Navigate to any screen given current and target windows"""
-        file_manager_window = target_window()
-        file_manager_window.show()  # Show the new window
-        current_window.close()  # Close the current window
+        """Load a new screen inside the existing QMainWindow."""
+        new_widget = target_window()
+
+        # Ensure the current window is a QMainWindow
+        if isinstance(current_window, QMainWindow):
+            current_window.setCentralWidget(new_widget.centralWidget())  # Replace only the content
 
     @staticmethod
     def open_stl_editor(item, file_controller, stacked_widget, parent):
