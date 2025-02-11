@@ -17,10 +17,10 @@ class EditSTLWindow(QMainWindow):
         self.setAcceptDrops(True)
 
         self.file_path = file_path  # Store the file path
-        self._init_ui()
+        self.init_ui()
         self.vtk_viewer.load_stl(file_path)  # Automatically load the STL file
 
-    def _init_ui(self):
+    def init_ui(self):
         """Initialize the user interface components"""
         centerWidget = QWidget()
         self.setCentralWidget(centerWidget)

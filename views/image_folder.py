@@ -1,6 +1,5 @@
 import os
 import inspect
-import json
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QMainWindow
 )
@@ -23,9 +22,9 @@ class FileViewerWindow(QMainWindow):
         self.config_editor_widget = JsonEditorDialog(BATCH_FUNCTIONS_CONFIG_FILE)
         self.function_args = self.config_editor_widget.getJsonData()  # Load saved config
 
-        self.initUI()
+        self.init_ui()
 
-    def initUI(self):
+    def init_ui(self):
         central_widget = QWidget()  # Create a central widget for QMainWindow
         main_layout = QVBoxLayout(central_widget)  # Apply layout to central widget
 

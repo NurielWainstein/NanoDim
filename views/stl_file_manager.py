@@ -61,6 +61,3 @@ class FileManagerWindow(QMainWindow):
         self.setCentralWidget(self.stacked_widget)
 
         self.file_list_panel.update_items()
-
-    def show_file_manager(self):
-        self.stacked_widget.setCurrentWidget(self.file_manager_widget)
